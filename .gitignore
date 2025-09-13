@@ -24,10 +24,7 @@ instance/
 *.sqlite3
 
 # Alembic migrations (optionnel de les ignorer)
-migrations/
-!migrations/README
-!migrations/env.py
-!migrations/script.py.mako
+
 
 # Logs
 *.log
