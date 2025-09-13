@@ -122,3 +122,23 @@ class DocumentService:
         except Exception:
             db.session.rollback()
             raise
+
+    @staticmethod
+    def get_by_reference(reference_id: int) -> list[DocumentResponse]:
+        docs = Document.query.filter_by(reference_id=reference_id).all()
+        return [DocumentResponse.model_validate(d) for d in docs]
+
+    @staticmethod
+    def get_by_category(category_id: int) -> list[DocumentResponse]:
+        docs = Document.query.filter_by(category_id=category_id).all()
+        return [DocumentResponse.model_validate(d) for d in docs]
+
+    @staticmethod
+    def get_by_reference_includes(reference_id: int) -> list[DocumentIncludedResponse]:
+        docs = Document.query.filter_by(reference_id=reference_id).all()
+        return [DocumentIncludedResponse.model_validate(d) for d in docs]
+
+    @staticmethod
+    def get_by_category_includes(category_id: int) -> list[DocumentIncludedResponse]:
+        docs = Document.query.filter_by(category_id=category_id).all()
+        return [DocumentIncludedResponse.model_validate(d) for d in docs]

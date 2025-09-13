@@ -18,10 +18,28 @@ def create_document():
 @document_bp.route("/", methods=["GET"])
 def list_documents():
     include = request.args.get("include", "false").lower() == "true"
-    if include:
-        docs = DocumentService.list_all_with_includes()
+    category_id = request.args.get("category_id", type=int)
+    reference_id = request.args.get("reference_id", type=int)
+
+    if category_id is not None:
+        docs = (
+            DocumentService.get_by_category_includes(category_id)
+            if include
+            else DocumentService.get_by_category(category_id)
+        )
+    elif reference_id is not None:
+        docs = (
+            DocumentService.get_by_reference_includes(reference_id)
+            if include
+            else DocumentService.get_by_reference(reference_id)
+        )
     else:
-        docs = DocumentService.get_all()
+        docs = (
+            DocumentService.list_all_with_includes()
+            if include
+            else DocumentService.get_all()
+        )
+
     return jsonify([doc.model_dump() for doc in docs]), 200
 
 
