@@ -1,0 +1,46 @@
+# Environnement virtuel
+env/
+venv/
+ENV/
+.venv/
+
+# Variables d'environnement
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.pkl
+*.egg-info/
+*.egg
+
+# Flask / SQLAlchemy
+instance/
+*.db
+*.sqlite3
+
+# Alembic migrations (optionnel de les ignorer)
+migrations/
+!migrations/README
+!migrations/env.py
+!migrations/script.py.mako
+
+# Logs
+*.log
+
+# IDE / éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Tests / coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
