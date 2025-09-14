@@ -55,9 +55,7 @@ class CategoryService:
     def get_categories_with_references() -> list[CategoryIncludeReferencesResponse]:
         categories = Category.query.all()
         return [
-            CategoryIncludeReferencesResponse.model_validate(cat)
-            for cat in categories
-            if cat.references
+            CategoryIncludeReferencesResponse.model_validate(cat) for cat in categories
         ]
 
     @staticmethod
