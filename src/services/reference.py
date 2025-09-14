@@ -1,5 +1,6 @@
 from src.extensions import db
 from src.models.reference import Reference
+from src.models.category import Category
 from src.dto.reference import ReferenceCreateRequest, ReferenceResponse
 from src.errors import ConflictError, NotFoundError
 
@@ -8,6 +9,12 @@ class ReferenceService:
 
     @staticmethod
     def create(data: ReferenceCreateRequest) -> ReferenceResponse:
+        # Vérifier que la catégorie existe
+        if data.category_id is not None:
+            if not Category.query.get(data.category_id):
+                raise NotFoundError(f"Catégorie {data.category_id} introuvable.")
+
+        # Vérifier doublons
         existing = Reference.query.filter_by(
             title=data.title, author=data.author
         ).first()
@@ -20,6 +27,7 @@ class ReferenceService:
             title=data.title,  # type: ignore
             author=data.author,  # type: ignore
             description=data.description,  # type: ignore
+            category_id=data.category_id,  # type: ignore
         )
         db.session.add(reference)
         db.session.commit()
