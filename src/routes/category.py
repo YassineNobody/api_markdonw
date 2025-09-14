@@ -18,13 +18,25 @@ def create_category():
 
 @category_bp.route("/<int:category_id>", methods=["GET"])
 def get_category(category_id):
-    category_response = CategoryService.get_by_id(category_id)
+    include = request.args.get("include", "false").lower() == "true"
+
+    if include:
+        category_response = CategoryService.get_by_id_with_references(category_id)
+    else:
+        category_response = CategoryService.get_by_id(category_id)
+
     return jsonify(category_response.model_dump()), 200
 
 
 @category_bp.route("/", methods=["GET"])
 def list_categories():
-    categories = CategoryService.list_all()
+    include = request.args.get("include", "false").lower() == "true"
+
+    if include:
+        categories = CategoryService.get_categories_with_references()
+    else:
+        categories = CategoryService.list_all()
+
     return jsonify([cat.model_dump() for cat in categories]), 200
 
 
@@ -32,4 +44,4 @@ def list_categories():
 @require_api_token
 def delete_category(category_id):
     CategoryService.delete(category_id)
-    return "Catégorie supprimée avec succès.", 200
+    return jsonify({"message": "Catégorie supprimée avec succès."}), 200

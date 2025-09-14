@@ -1,7 +1,13 @@
+from src.dto.reference import ReferenceResponse
 from src.errors import ConflictError, NotFoundError
 from src.extensions import db
 from src.models.category import Category
-from src.dto.category import CategoryCreateRequest, CategoryResponse
+from src.dto.category import (
+    CategoryCreateRequest,
+    CategoryIncludeReferencesResponse,
+    CategoryResponse,
+)
+
 
 class CategoryService:
 
@@ -22,7 +28,7 @@ class CategoryService:
         if not category:
             raise NotFoundError(f"Catégorie {category_id} introuvable.")
         return CategoryResponse.model_validate(category)
-    
+
     @staticmethod
     def list_all() -> list[CategoryResponse]:
         categories = Category.query.all()
@@ -33,8 +39,32 @@ class CategoryService:
         category = Category.query.get(category_id)
         if not category:
             raise NotFoundError(f"Catégorie {category_id} introuvable.")
-        
+
         db.session.delete(category)
         db.session.commit()
-        
-        
+
+    @staticmethod
+    def get_references(category_id: int) -> list[ReferenceResponse]:
+        category = Category.query.get(category_id)
+        if not category:
+            raise NotFoundError(f"Catégorie {category_id} introuvable.")
+
+        return [ReferenceResponse.model_validate(ref) for ref in category.references]
+
+    @staticmethod
+    def get_categories_with_references() -> list[CategoryIncludeReferencesResponse]:
+        categories = Category.query.all()
+        return [
+            CategoryIncludeReferencesResponse.model_validate(cat)
+            for cat in categories
+            if cat.references
+        ]
+
+    @staticmethod
+    def get_by_id_with_references(
+        category_id: int,
+    ) -> CategoryIncludeReferencesResponse:
+        category = Category.query.get(category_id)
+        if not category:
+            raise NotFoundError(f"Catégorie {category_id} introuvable.")
+        return CategoryIncludeReferencesResponse.model_validate(category)
