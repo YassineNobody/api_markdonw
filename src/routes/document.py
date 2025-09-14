@@ -53,6 +53,16 @@ def get_document(document_id):
     return jsonify(doc.model_dump()), 200
 
 
+@document_bp.route("/slug/<string:slug>", methods=["GET"])
+def get_document_by_slug(slug):
+    include = request.args.get("include", "false").lower() == "true"
+    if include:
+        doc = DocumentService.get_by_slug_with_includes(slug)
+    else:
+        doc = DocumentService.get_by_slug(slug)
+    return jsonify(doc.model_dump()), 200
+
+
 @document_bp.route("/<int:document_id>", methods=["PATCH"])
 @require_api_token
 def update_document(document_id):

@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from src.extensions import db
 from src.models.reference import Reference
 from src.models.category import Category
@@ -44,6 +45,13 @@ class ReferenceService:
         ref = Reference.query.get(reference_id)
         if not ref:
             raise NotFoundError(f"Référence {reference_id} introuvable.")
+        return ReferenceResponse.model_validate(ref)
+
+    @staticmethod
+    def get_by_slug(slug: str) -> ReferenceResponse:
+        ref = Reference.query.filter_by(slug=slug).first()
+        if not ref:
+            raise NotFoundError(f"Référence slug='{slug}' introuvable.")
         return ReferenceResponse.model_validate(ref)
 
     @staticmethod

@@ -22,6 +22,7 @@ class DocumentUpdateRequest(BaseModel):
 class DocumentResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
+    slug:str
     title: str
     content: str
     category_id: Optional[int] = None
@@ -31,6 +32,7 @@ class DocumentResponse(BaseModel):
 class DocumentIncludedResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
+    slug:str
     title: str
     content: str
     category: Optional[CategoryResponse] = None

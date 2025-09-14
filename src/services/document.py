@@ -1,4 +1,3 @@
-# src/services/document_service.py
 from typing import Optional
 from sqlalchemy.exc import IntegrityError
 from src.extensions import db
@@ -8,7 +7,7 @@ from src.models.reference import Reference
 from src.dto.document import (
     DocumentCreateRequest,
     DocumentIncludedResponse,
-    DocumentUpdateRequest,  # <- DTO avec tous les champs optionnels
+    DocumentUpdateRequest,
     DocumentResponse,
 )
 from src.errors import NotFoundError
@@ -32,7 +31,6 @@ class DocumentService:
 
     @staticmethod
     def create(data: DocumentCreateRequest) -> DocumentResponse:
-        # validations relationnelles
         if data.category_id is not None:
             DocumentService._ensure_category_exists(data.category_id)
         if data.reference_id is not None:
@@ -61,6 +59,20 @@ class DocumentService:
         return DocumentResponse.model_validate(doc)
 
     @staticmethod
+    def get_by_slug(
+        slug: str, include: bool = False
+    ) -> DocumentResponse | DocumentIncludedResponse:
+        doc = Document.query.filter_by(slug=slug).first()
+        if not doc:
+            raise NotFoundError(f"Document slug='{slug}' introuvable.")
+
+        return (
+            DocumentIncludedResponse.model_validate(doc)
+            if include
+            else DocumentResponse.model_validate(doc)
+        )
+
+    @staticmethod
     def get_by_id_with_includes(document_id: int) -> DocumentIncludedResponse:
         doc = Document.query.get(document_id)
         if not doc:
@@ -83,13 +95,11 @@ class DocumentService:
         if not doc:
             raise NotFoundError(f"Document {document_id} introuvable.")
 
-        # validations relationnelles si on demande un changement
         if data.category_id is not None:
             DocumentService._ensure_category_exists(data.category_id)
         if data.reference_id is not None:
             DocumentService._ensure_reference_exists(data.reference_id)
 
-        # mise à jour partielle (seulement champs fournis)
         if data.title is not None:
             doc.title = data.title
         if data.content is not None:
@@ -142,3 +152,10 @@ class DocumentService:
     def get_by_category_includes(category_id: int) -> list[DocumentIncludedResponse]:
         docs = Document.query.filter_by(category_id=category_id).all()
         return [DocumentIncludedResponse.model_validate(d) for d in docs]
+
+    @staticmethod
+    def get_by_slug_with_includes(slug: str) -> DocumentIncludedResponse:
+        doc = Document.query.filter_by(slug=slug).first()
+        if not doc:
+            raise NotFoundError(f"Document slug='{slug}' introuvable.")
+        return DocumentIncludedResponse.model_validate(doc)

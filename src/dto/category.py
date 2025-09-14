@@ -9,7 +9,7 @@ class CategoryResponse(BaseModel):
     id: int
     name: str
     description: Optional[str] = None
-
+    slug:str
 
 class CategoryCreateRequest(BaseModel):
     name: str

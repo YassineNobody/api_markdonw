@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from src.dto.reference import ReferenceResponse
 from src.errors import ConflictError, NotFoundError
 from src.extensions import db
@@ -66,3 +67,15 @@ class CategoryService:
         if not category:
             raise NotFoundError(f"Catégorie {category_id} introuvable.")
         return CategoryIncludeReferencesResponse.model_validate(category)
+
+    @staticmethod
+    def get_by_slug(
+        slug: str, include_ref: bool = False
+    ) -> BaseModel:
+        category = Category.query.filter_by(slug=slug).first()
+        if not category:
+            raise NotFoundError(f"Catégorie slug='{slug}' introuvable.")
+
+        if include_ref:
+            return CategoryIncludeReferencesResponse.model_validate(category)
+        return CategoryResponse.model_validate(category)

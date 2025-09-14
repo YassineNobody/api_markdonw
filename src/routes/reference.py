@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from src.dto.reference import ReferenceCreateRequest
 from src.services.reference import ReferenceService
 from src.auth import require_api_token
+
 reference_bp = Blueprint("reference", __name__, url_prefix="/references")
 
 
@@ -20,6 +21,12 @@ def get_reference(reference_id):
     return jsonify(reference_response.model_dump()), 200
 
 
+@reference_bp.route("/slug/<string:slug>", methods=["GET"])
+def get_reference_by_slug(slug):
+    reference_response = ReferenceService.get_by_slug(slug)
+    return jsonify(reference_response.model_dump()), 200
+
+
 @reference_bp.route("/", methods=["GET"])
 def list_references():
     references = ReferenceService.list_all()
@@ -30,4 +37,4 @@ def list_references():
 @require_api_token
 def delete_reference(reference_id):
     ReferenceService.delete(reference_id)
-    return "Référence supprimée avec succès.", 200
+    return jsonify({"message": "Référence supprimée avec succès."}), 200

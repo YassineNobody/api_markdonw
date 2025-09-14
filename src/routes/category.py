@@ -1,4 +1,3 @@
-# src/routes/category_routes.py
 from flask import Blueprint, request, jsonify
 from src.services.category import CategoryService
 from src.dto.category import CategoryCreateRequest
@@ -25,6 +24,13 @@ def get_category(category_id):
     else:
         category_response = CategoryService.get_by_id(category_id)
 
+    return jsonify(category_response.model_dump()), 200
+
+
+@category_bp.route("/slug/<string:slug>", methods=["GET"])
+def get_category_by_slug(slug):
+    include = request.args.get("include", "false").lower() == "true"
+    category_response = CategoryService.get_by_slug(slug, include_ref=include)
     return jsonify(category_response.model_dump()), 200
 
 
