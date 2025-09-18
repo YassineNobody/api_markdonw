@@ -4,10 +4,9 @@ from src.dto.category import CategoryCreateRequest
 from src.auth import require_api_token
 
 category_bp = Blueprint("category", __name__, url_prefix="/categories")
-category_bp.strict_slashes = False
 
 
-@category_bp.route("", methods=["POST"])
+@category_bp.route("/", methods=["POST"])
 @require_api_token
 def create_category():
     data = request.get_json()
@@ -35,7 +34,7 @@ def get_category_by_slug(slug):
     return jsonify(category_response.model_dump()), 200
 
 
-@category_bp.route("", methods=["GET"])
+@category_bp.route("/", methods=["GET"])
 def list_categories():
     include = request.args.get("include", "false").lower() == "true"
 
