@@ -11,12 +11,15 @@ class Document(db.Model):
     title = Column(String(200), nullable=False)
     content = Column(Text, nullable=False)
     slug = Column(String(255), nullable=False, unique=True)
-    # Relation vers Category
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+
+    category_id = Column(
+        Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=True
+    )
     category = relationship("Category", back_populates="documents")
 
-    # Relation vers Reference
-    reference_id = Column(Integer, ForeignKey("references.id"), nullable=True)
+    reference_id = Column(
+        Integer, ForeignKey("references.id", ondelete="CASCADE"), nullable=True
+    )
     reference = relationship("Reference", back_populates="documents")
 
     @validates("title", "reference_id")
