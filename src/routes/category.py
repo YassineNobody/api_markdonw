@@ -4,6 +4,7 @@ from src.dto.category import CategoryCreateRequest
 from src.auth import require_api_token
 
 category_bp = Blueprint("category", __name__, url_prefix="/categories")
+category_bp.strict_slashes = False
 
 
 @category_bp.route("", methods=["POST"])

@@ -4,7 +4,7 @@ from src.services.reference import ReferenceService
 from src.auth import require_api_token
 
 reference_bp = Blueprint("reference", __name__, url_prefix="/references")
-
+reference_bp.strict_slashes = False
 
 @reference_bp.route("", methods=["POST"])
 @require_api_token

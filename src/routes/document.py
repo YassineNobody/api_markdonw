@@ -4,7 +4,7 @@ from src.dto.document import DocumentCreateRequest, DocumentUpdateRequest
 from src.auth import require_api_token
 
 document_bp = Blueprint("document", __name__, url_prefix="/documents")
-
+document_bp.strict_slashes = False
 
 @document_bp.route("", methods=["POST"])
 @require_api_token
