@@ -6,9 +6,16 @@ from src.extensions import db, migrate
 from src.routes import register_blueprints
 from src import errors
 
+
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    CORS(
+        app,
+        resources={r"/*": {"origins": "*"}},
+        supports_credentials=True,
+        allow_headers=["Content-Type", "Authorization"],
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    )
 
     app.config.from_object(Config)
 
