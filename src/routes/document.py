@@ -6,7 +6,7 @@ from src.auth import require_api_token
 document_bp = Blueprint("document", __name__, url_prefix="/documents")
 
 
-@document_bp.route("/", methods=["POST"])
+@document_bp.route("", methods=["POST"])
 @require_api_token
 def create_document():
     data = request.get_json()
@@ -15,7 +15,7 @@ def create_document():
     return jsonify(document_response.model_dump()), 201
 
 
-@document_bp.route("/", methods=["GET"])
+@document_bp.route("", methods=["GET"])
 def list_documents():
     include = request.args.get("include", "false").lower() == "true"
     category_id = request.args.get("category_id", type=int)

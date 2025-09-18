@@ -6,7 +6,7 @@ from src.auth import require_api_token
 reference_bp = Blueprint("reference", __name__, url_prefix="/references")
 
 
-@reference_bp.route("/", methods=["POST"])
+@reference_bp.route("", methods=["POST"])
 @require_api_token
 def create_reference():
     data = request.get_json()
@@ -27,7 +27,7 @@ def get_reference_by_slug(slug):
     return jsonify(reference_response.model_dump()), 200
 
 
-@reference_bp.route("/", methods=["GET"])
+@reference_bp.route("", methods=["GET"])
 def list_references():
     references = ReferenceService.list_all()
     return jsonify([ref.model_dump() for ref in references]), 200
